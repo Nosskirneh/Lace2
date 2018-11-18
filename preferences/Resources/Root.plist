@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+    <array>
+        <!-- Header -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>headerCellClass</key>
+            <string>LaceHeaderCell</string>
+        </dict>
+
+        <!-- Enable -->
+        <!-- <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict> -->
+
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>LaceSwitchTableCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>se.nosskirneh.lace</string>
+            <key>key</key>
+            <string>enabled</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.lace/preferencesChanged</string>
+        </dict>
+
+
+        <!-- Change while dragging -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerAlignment</key>
+            <integer>0</integer>
+            <key>footerText</key>
+            <string>Changes the selected section even when you're in the act of dragging.</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>LaceSwitchTableCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>se.nosskirneh.lace</string>
+            <key>key</key>
+            <string>ChangeWhileDragging</string>
+            <key>label</key>
+            <string>Change While Dragging</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.lace/preferencesChanged</string>
+        </dict>
+
+
+        <!-- Auto-mode -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Automode</string>
+            <key>footerAlignment</key>
+            <integer>0</integer>
+            <key>footerText</key>
+            <string>Open Today view if there are no pending notifications. Overrides "Change While Dragging".</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>LaceSwitchTableCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>se.nosskirneh.lace</string>
+            <key>key</key>
+            <string>Automode</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.lace/preferencesChanged</string>
+        </dict>
+
+
+        <!-- Default Section -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Default section</string>
+            <key>footerAlignment</key>
+            <integer>0</integer>
+            <key>footerText</key>
+            <string>Will always open NC to selected section. Overrides all other modes.</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>LaceSwitchTableCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>se.nosskirneh.lace</string>
+            <key>key</key>
+            <string>DefaultSectionEnabled</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.lace/preferencesChanged</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSLinkListCell</string>
+            <key>key</key>
+            <string>DefaultSection</string>
+            <key>defaults</key>
+            <string>se.nosskirneh.lace</string>
+            <key>detail</key>
+            <string>LaceColorListItemsController</string>
+            <key>get</key>
+            <string>readPreferenceValue:</string>
+            <key>set</key>
+            <string>setPreferenceValue:specifier:</string>
+            <key>validTitles</key>
+            <array>
+                <string>Today</string>
+                <string>Main</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <string>0</string>
+                <string>1</string>
+            </array>
+            <key>default</key>
+            <string>0</string>
+            <key>label</key>
+            <string>Section</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.lace/preferencesChanged</string>
+        </dict>
+
+
+        <!-- About -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>About</string>
+        </dict>
+        <dict>
+            <key>action</key>
+            <string>donate</string>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>LaceColorButtonCell</string>
+            <key>icon</key>
+            <string>donate.png</string>
+            <key>label</key>
+            <string>Support my work</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerAlignment</key>
+            <integer>1</integer>
+            <key>footerText</key>
+            <string>Made by Andreas Henriksson</string>
+        </dict>
+    </array>
+    <key>title</key>
+    <string></string>
+</dict>
+</plist>
