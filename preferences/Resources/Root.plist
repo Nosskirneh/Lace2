@@ -26,13 +26,13 @@
             <key>default</key>
             <true/>
             <key>defaults</key>
-            <string>se.nosskirneh.lace</string>
+            <string>se.nosskirneh.lace2</string>
             <key>key</key>
             <string>enabled</string>
             <key>label</key>
             <string>Enabled</string>
             <key>PostNotification</key>
-            <string>se.nosskirneh.lace/preferencesChanged</string>
+            <string>se.nosskirneh.lace2/preferencesChanged</string>
         </dict>
 
 
@@ -54,13 +54,13 @@
             <key>default</key>
             <true/>
             <key>defaults</key>
-            <string>se.nosskirneh.lace</string>
+            <string>se.nosskirneh.lace2</string>
             <key>key</key>
             <string>ChangeWhileDragging</string>
             <key>label</key>
             <string>Change While Dragging</string>
             <key>PostNotification</key>
-            <string>se.nosskirneh.lace/preferencesChanged</string>
+            <string>se.nosskirneh.lace2/preferencesChanged</string>
         </dict>
 
 
@@ -84,13 +84,13 @@
             <key>default</key>
             <false/>
             <key>defaults</key>
-            <string>se.nosskirneh.lace</string>
+            <string>se.nosskirneh.lace2</string>
             <key>key</key>
             <string>Automode</string>
             <key>label</key>
             <string>Enabled</string>
             <key>PostNotification</key>
-            <string>se.nosskirneh.lace/preferencesChanged</string>
+            <string>se.nosskirneh.lace2/preferencesChanged</string>
         </dict>
 
 
@@ -114,13 +114,13 @@
             <key>default</key>
             <false/>
             <key>defaults</key>
-            <string>se.nosskirneh.lace</string>
+            <string>se.nosskirneh.lace2</string>
             <key>key</key>
             <string>DefaultSectionEnabled</string>
             <key>label</key>
             <string>Enabled</string>
             <key>PostNotification</key>
-            <string>se.nosskirneh.lace/preferencesChanged</string>
+            <string>se.nosskirneh.lace2/preferencesChanged</string>
         </dict>
 
         <dict>
@@ -129,7 +129,7 @@
             <key>key</key>
             <string>DefaultSection</string>
             <key>defaults</key>
-            <string>se.nosskirneh.lace</string>
+            <string>se.nosskirneh.lace2</string>
             <key>detail</key>
             <string>LaceColorListItemsController</string>
             <key>get</key>
@@ -151,7 +151,7 @@
             <key>label</key>
             <string>Section</string>
             <key>PostNotification</key>
-            <string>se.nosskirneh.lace/preferencesChanged</string>
+            <string>se.nosskirneh.lace2/preferencesChanged</string>
         </dict>
 
 

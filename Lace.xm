@@ -1,4 +1,4 @@
-#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.lace.plist"]
+#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.lace2.plist"]
 
 #define kEnabled @"enabled"
 #define kDefaultSectionEnabled @"DefaultSectionEnabled"
@@ -121,5 +121,5 @@ void updateSettings(CFNotificationCenterRef center,
     if (!prefs) prefs = [[NSMutableDictionary alloc] init];
 
     // Add observer to update settings    
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFStringRef(@"se.nosskirneh.lace/preferencesChanged"), NULL, 0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFStringRef(@"se.nosskirneh.lace2/preferencesChanged"), NULL, 0);
 }
