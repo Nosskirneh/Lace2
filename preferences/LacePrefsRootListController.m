@@ -2,7 +2,7 @@
 #import <Preferences/PSControlTableCell.h>
 #import <Preferences/PSSpecifier.h>
 
-#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.lace.plist"]
+#define prefPath @"/var/mobile/Library/Preferences/se.nosskirneh.lace2.plist"
 #define LaceColor [UIColor colorWithRed:0.73 green:0.06 blue:0.58 alpha:1.0]
 
 @interface LacePrefsRootListController : PSListController {
@@ -135,8 +135,8 @@
 
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    NSMutableDictionary *preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:prefPath];
-    if (!preferences) preferences = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
+    if (!preferences) preferences = [NSMutableDictionary new];
     NSString *key = [specifier propertyForKey:@"key"];
 
     [preferences setObject:value forKey:key];
