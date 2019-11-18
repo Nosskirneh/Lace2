@@ -1,13 +1,14 @@
 TARGET = iphone:clang:9.2
+ARCHS = arm64 arm64e
 
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = LacePrefs
-LacePrefs_FILES = $(wildcard *.m)
-LacePrefs_CFLAGS = -fobjc-arc
-LacePrefs_INSTALL_PATH = /Library/PreferenceBundles
-LacePrefs_FRAMEWORKS = UIKit
-LacePrefs_PRIVATE_FRAMEWORKS = Preferences
+$(BUNDLE_NAME)_FILES = $(wildcard *.m)
+$(BUNDLE_NAME)_CFLAGS = -fobjc-arc
+$(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
+$(BUNDLE_NAME)_FRAMEWORKS = UIKit
+$(BUNDLE_NAME)_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

@@ -16,7 +16,7 @@ void updateSettings(CFNotificationCenterRef center,
                     CFStringRef name,
                     const void *object,
                     CFDictionaryRef userInfo) {
-    prefs = [[NSDictionary alloc] initWithContentsOfFile:prefPath];
+    prefs = [NSDictionary dictionaryWithContentsOfFile:prefPath];
 }
 
 // When turning on the screen on the lockscreen
