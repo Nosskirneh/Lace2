@@ -1,7 +1,7 @@
 Package: se.nosskirneh.lace2
 Name: Lace 2
 Depends: firmware (>= 11.0), mobilesubstrate, preferenceloader
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Description: Control the lockscreen page with ease
 Maintainer: Andreas Henriksson
