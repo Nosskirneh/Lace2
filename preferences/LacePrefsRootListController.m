@@ -157,6 +157,10 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/aNosskirneh"]];
 }
 
+- (void)sourceCode {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Nosskirneh/Lace2"]];
+}
+
 @end
 
 
