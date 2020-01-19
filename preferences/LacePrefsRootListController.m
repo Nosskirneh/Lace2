@@ -161,6 +161,10 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Nosskirneh/Lace2"]];
 }
 
+- (void)followTwitter {
+    openTwitter();
+}
+
 @end
 
 

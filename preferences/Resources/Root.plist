@@ -193,6 +193,16 @@
         </dict>
         <dict>
             <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>LaceColorButtonCell</string>
+            <key>action</key>
+            <string>followTwitter</string>
+            <key>label</key>
+            <string>Follow me on Twitter</string>
+        </dict>
+        <dict>
+            <key>cell</key>
             <string>PSGroupCell</string>
             <key>footerAlignment</key>
             <integer>1</integer>
