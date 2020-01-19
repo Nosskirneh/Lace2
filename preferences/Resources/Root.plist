@@ -51,6 +51,8 @@
             <string>PSSwitchCell</string>
             <key>cellClass</key>
             <string>LaceSwitchTableCell</string>
+            <key>id</key>
+            <string>ChangeWhileDragging</string>
             <key>default</key>
             <true/>
             <key>defaults</key>
@@ -69,7 +71,8 @@
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
-            <string>Automode</string>
+            <!-- This space is required for the hiding of specifier with the ID automode to work! -->
+            <string>Automode </string>
             <key>footerAlignment</key>
             <integer>0</integer>
             <key>footerText</key>
@@ -81,6 +84,8 @@
             <string>PSSwitchCell</string>
             <key>cellClass</key>
             <string>LaceSwitchTableCell</string>
+            <key>id</key>
+            <string>Automode</string>
             <key>default</key>
             <false/>
             <key>defaults</key>
@@ -111,6 +116,8 @@
             <string>PSSwitchCell</string>
             <key>cellClass</key>
             <string>LaceSwitchTableCell</string>
+            <key>id</key>
+            <string>DefaultSectionEnabled</string>
             <key>default</key>
             <false/>
             <key>defaults</key>
@@ -127,6 +134,8 @@
             <key>cell</key>
             <string>PSLinkListCell</string>
             <key>key</key>
+            <string>DefaultSection</string>
+            <key>id</key>
             <string>DefaultSection</string>
             <key>defaults</key>
             <string>se.nosskirneh.lace2</string>

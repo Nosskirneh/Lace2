@@ -1,9 +1,14 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSControlTableCell.h>
 #import <Preferences/PSSpecifier.h>
+#import <notify.h>
+#import "Common.h"
+#import "../../TwitterStuff/Prompt.h"
 
-#define prefPath @"/var/mobile/Library/Preferences/se.nosskirneh.lace2.plist"
-#define LaceColor [UIColor colorWithRed:0.73 green:0.06 blue:0.58 alpha:1.0]
+#define kCell @"cell"
+#define kKey @"key"
+#define kDefault @"default"
+#define kPostNotification @"PostNotification"
 
 @interface LacePrefsRootListController : PSListController {
     UIWindow *settingsView;
@@ -19,40 +24,10 @@
     return _specifiers;
 }
 
-- (NSString *)kEnabled {
-    return @"enabled";
+- (void)loadView {
+    [super loadView];
+    presentFollowAlert(kPrefPath, self);
 }
-
-- (NSString *)kDefaultSection {
-    return @"DefaultSection";
-}
-
-- (NSString *)kDefaultSectionEnabled {
-    return @"DefaultSectionEnabled";
-}
-
-- (NSString *)kAutomode {
-    return @"Automode";
-}
-
-// Indexpaths
-- (NSIndexPath *)changeWhileDraggingIndexPath {
-    return [NSIndexPath indexPathForRow:0 inSection:1];
-}
-
-- (NSIndexPath *)automodeIndexPath {
-    return [NSIndexPath indexPathForRow:0 inSection:2];
-}
-
-- (NSIndexPath *)defaultSectionEnableSwitchIndexPath {
-    return [NSIndexPath indexPathForRow:0 inSection:3];
-}
-
-- (NSIndexPath *)defaultSectionIndexPath {
-    return [NSIndexPath indexPathForRow:1 inSection:3];
-}
-
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -70,11 +45,13 @@
     settingsView.tintColor = nil;
 }
 
-- (void)setCellForRowAtIndexPath:(NSIndexPath *)indexPath enabled:(BOOL)enabled {
-    if (!indexPath)
+- (void)setEnabled:(BOOL)enabled forSpecifierID:(NSString *)ID {
+    PSSpecifier *specifier = [self specifierForID:ID];
+    if (!specifier || [[specifier propertyForKey:kCell] isEqualToString:@"PSGroupCell"])
         return;
 
-    UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:indexPath];
+    NSIndexPath *indexPath = [self indexPathForSpecifier:specifier];
+    PSTableCell *cell = [self tableView:self.table cellForRowAtIndexPath:indexPath];
     if (cell) {
         cell.userInteractionEnabled = enabled;
         cell.textLabel.enabled = enabled;
@@ -84,100 +61,100 @@
             PSControlTableCell *controlCell = (PSControlTableCell *)cell;
             if (controlCell.control)
                 controlCell.control.enabled = enabled;
+        } else {
+            [cell setCellEnabled:enabled];
         }
     }
 }
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
-    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
+    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:kPrefPath];
 
-    NSString *key = [specifier propertyForKey:@"key"];
+    NSString *key = [specifier propertyForKey:kKey];
     BOOL enableCell = [preferences[key] boolValue];
 
-    if ([key isEqualToString:[self kEnabled]]) {
+    if ([key isEqualToString:kEnabled]) {
         enableCell = preferences[key] ? enableCell : YES;
         // Change While Dragging
-        [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:enableCell];
+        [self setEnabled:enableCell forSpecifierID:kChangeWhileDragging];
 
         // Automode
-        [self setCellForRowAtIndexPath:[self automodeIndexPath] enabled:enableCell];
+        [self setEnabled:enableCell forSpecifierID:kAutomode];
 
         // Default Section
-        [self setCellForRowAtIndexPath:[self defaultSectionEnableSwitchIndexPath] enabled:enableCell];
+        [self setEnabled:enableCell forSpecifierID:kDefaultSectionEnabled];
 
-        // Only reenable DefaultSection cell if DefaultSectionEnabled is enabled
-        if (![preferences[[self kDefaultSectionEnabled]] boolValue])
-            [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:NO];
+        // Only reenable the DefaultSection cell if DefaultSectionEnabled is enabled
+        if (![preferences[kDefaultSection] boolValue])
+            [self setEnabled:NO forSpecifierID:kDefaultSection];
         else
-            [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:enableCell];
+            [self setEnabled:enableCell forSpecifierID:kDefaultSection];
 
-    } else if (!preferences[[self kEnabled]] || [preferences[[self kEnabled]] boolValue]) {
-        if ([key isEqualToString:[self kAutomode]]) {
-            if ([preferences[[self kDefaultSectionEnabled]] boolValue])
-                [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:NO];
+    } else if (!preferences[kEnabled] || [preferences[kEnabled] boolValue]) {
+        if ([key isEqualToString:kAutomode]) {
+            if ([preferences[kDefaultSectionEnabled] boolValue])
+                [self setEnabled:NO forSpecifierID:kChangeWhileDragging];
             else
-                [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:!enableCell];
+                [self setEnabled:!enableCell forSpecifierID:kChangeWhileDragging];
 
-        } else if ([key isEqualToString:[self kDefaultSectionEnabled]]) {
+        } else if ([key isEqualToString:kDefaultSectionEnabled]) {
             // Disable Change While Dragging
-            [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:!enableCell];
+            [self setEnabled:!enableCell forSpecifierID:kChangeWhileDragging];
             // Disable Automode
-            [self setCellForRowAtIndexPath:[self automodeIndexPath] enabled:!enableCell];
+            [self setEnabled:!enableCell forSpecifierID:kAutomode];
             // Enable DefaultSection cell
-            [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:enableCell];
+            [self setEnabled:enableCell forSpecifierID:kDefaultSection];
         }
     }
 
     if (!preferences[key])
-        return specifier.properties[@"default"];
+        return specifier.properties[kDefault];
     return preferences[key];
 }
 
-
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
-    if (!preferences) preferences = [NSMutableDictionary new];
-    NSString *key = [specifier propertyForKey:@"key"];
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:kPrefPath];
+    if (!preferences)
+        preferences = [NSMutableDictionary new];
+    NSString *key = [specifier propertyForKey:kKey];
 
     [preferences setObject:value forKey:key];
-    [preferences writeToFile:prefPath atomically:YES];
+    [preferences writeToFile:kPrefPath atomically:YES];
 
-    if ([key isEqualToString:[self kEnabled]]) {
+    if ([key isEqualToString:kEnabled]) {
         // Change While Dragging
-        [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:[value boolValue]];
+        [self setEnabled:[value boolValue] forSpecifierID:kChangeWhileDragging];
 
         // Automode
-        [self setCellForRowAtIndexPath:[self automodeIndexPath] enabled:[value boolValue]];
+        [self setEnabled:[value boolValue] forSpecifierID:kAutomode];
 
         // Default Section enable
-        [self setCellForRowAtIndexPath:[self defaultSectionEnableSwitchIndexPath] enabled:[value boolValue]];
+        [self setEnabled:[value boolValue] forSpecifierID:kDefaultSectionEnabled];
 
-        // Only reenable Section cell if DefaultSectionEnabled is enabled
-        if (![preferences[[self kDefaultSectionEnabled]] boolValue])
-            [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:NO];
+        // Only reenable the Section cell if DefaultSectionEnabled is enabled
+        if (![preferences[kDefaultSection] boolValue])
+            [self setEnabled:NO forSpecifierID:kDefaultSection];
         else
-            [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:[value boolValue]];
-    } else if ([key isEqualToString:[self kAutomode]]) {
+            [self setEnabled:[value boolValue] forSpecifierID:kDefaultSection];
+    } else if ([key isEqualToString:kAutomode]) {
         // Disable Change While Dragging
-        [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:![value boolValue]];
+        [self setEnabled:![value boolValue] forSpecifierID:kChangeWhileDragging];
 
-    } else if ([key isEqualToString:[self kDefaultSectionEnabled]]) {
+    } else if ([key isEqualToString:kDefaultSectionEnabled]) {
         // Disable Change While Dragging
-        [self setCellForRowAtIndexPath:[self changeWhileDraggingIndexPath] enabled:![value boolValue]];
+        [self setEnabled:![value boolValue] forSpecifierID:kChangeWhileDragging];
         // Disable Automode
-        [self setCellForRowAtIndexPath:[self automodeIndexPath] enabled:![value boolValue]];
+        [self setEnabled:![value boolValue] forSpecifierID:kAutomode];
         // Enable DefaultSection cell
-        [self setCellForRowAtIndexPath:[self defaultSectionIndexPath] enabled:[value boolValue]];
+        [self setEnabled:[value boolValue] forSpecifierID:kDefaultSection];
     }
 
-    [preferences writeToFile:prefPath atomically:YES];
-
-    CFStringRef post = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), post, NULL, NULL, YES);
+    [preferences writeToFile:kPrefPath atomically:YES];
+    notify_post([specifier.properties[kPostNotification] UTF8String]);
 }
 
 - (void)donate {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/nosskirneh"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/aNosskirneh"]];
 }
 
 @end
@@ -190,6 +167,7 @@
 @end
 
 @implementation LaceHeaderCell
+
 - (id)initWithSpecifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"headerCell" specifier:specifier];
     if (self) {
@@ -208,17 +186,42 @@
         [self setBackgroundColor:[UIColor clearColor]];
 
         // Setup constraints
-        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
-        NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0];
-        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
-        [self addConstraints:[NSArray arrayWithObjects:leftConstraint, rightConstraint, bottomConstraint, topConstraint, nil]];
+        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_label
+                                                                          attribute:NSLayoutAttributeLeft
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self
+                                                                          attribute:NSLayoutAttributeLeft
+                                                                         multiplier:1.0
+                                                                           constant:0.0];
+        NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_label
+                                                                         attribute:NSLayoutAttributeRight
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self
+                                                                          attribute:NSLayoutAttributeRight
+                                                                         multiplier:1.0
+                                                                           constant:0.0];
+        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_label
+                                                                             attribute:NSLayoutAttributeBottom
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                 toItem:self
+                                                                              attribute:NSLayoutAttributeBottom
+                                                                             multiplier:1.0
+                                                                               constant:0.0];
+        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_label
+                                                                         attribute:NSLayoutAttributeTop
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self
+                                                                          attribute:NSLayoutAttributeTop
+                                                                         multiplier:1.0
+                                                                           constant:0.0];
+        [self addConstraints:@[leftConstraint, rightConstraint,
+                               bottomConstraint, topConstraint]];
     }
     return self;
 }
 
-- (CGFloat)preferredHeightForWidth:(CGFloat)arg1 {
-    // Return a custom cell height.
+// Custom cell height
+- (CGFloat)preferredHeightForWidth:(CGFloat)width {
     return 140.f;
 }
 

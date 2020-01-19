@@ -4,7 +4,7 @@ ARCHS = arm64 arm64e
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = LacePrefs
-$(BUNDLE_NAME)_FILES = $(wildcard *.m)
+$(BUNDLE_NAME)_FILES = $(wildcard *.m) ../../TwitterStuff/Prompt.m
 $(BUNDLE_NAME)_CFLAGS = -fobjc-arc
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 $(BUNDLE_NAME)_FRAMEWORKS = UIKit

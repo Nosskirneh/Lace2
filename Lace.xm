@@ -1,43 +1,40 @@
+#import <notify.h>
 #import "Headers.h"
-
-#define prefPath @"/var/mobile/Library/Preferences/se.nosskirneh.lace2.plist"
-
-#define kEnabled @"enabled"
-#define kDefaultSectionEnabled @"DefaultSectionEnabled"
-#define kDefaultSection @"DefaultSection"
-#define kChangeWhileDragging @"ChangeWhileDragging"
-#define kAutomode @"Automode"
-
-static NSDictionary *prefs;
-
-
-void updateSettings(CFNotificationCenterRef center,
-                    void *observer,
-                    CFStringRef name,
-                    const void *object,
-                    CFDictionaryRef userInfo) {
-    prefs = [NSDictionary dictionaryWithContentsOfFile:prefPath];
-}
+#import "preferences/Common.h"
 
 // When turning on the screen on the lockscreen
-
 %hook CoverSheetView
 
 %property (nonatomic, assign) NSInteger currentPage;
+%property (nonatomic, retain) NSDictionary *lacePrefs;
+
+- (id)initWithFrame:(CGRect)frame {
+    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)%orig;
+    _self.lacePrefs = [NSDictionary dictionaryWithContentsOfFile:kPrefPath];
+
+    int _token;
+    notify_register_dispatch("se.nosskirneh.lace2/preferencesChanged",
+        &_token,
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0l),
+        ^(int _) {
+            _self.lacePrefs = [NSDictionary dictionaryWithContentsOfFile:kPrefPath];
+        }
+    );
+    return _self;
+}
 
 - (BOOL)resetScrollViewToMainPageAnimated:(BOOL)animated withCompletion:(id)completion {
+    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
+    NSDictionary *prefs = _self.lacePrefs;
     if (prefs[kEnabled] && ![prefs[kEnabled] boolValue])
         return %orig;
 
-    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
     int page = 1;
-
     if ([prefs[kDefaultSectionEnabled] boolValue]) {
         page = [prefs[kDefaultSection] integerValue];
     } else if ([prefs[kAutomode] boolValue]) {
         // Are notifications present?
-        BOOL hasContent = _self.mainPageView.pageViewController.combinedListViewController.hasContent;
-        if (!hasContent)
+        if (![_self hasLockscreenMainPageContent])
             page = 0;
     }
     [_self scrollToPageAtIndex:page animated:NO withCompletion:nil];
@@ -46,11 +43,12 @@ void updateSettings(CFNotificationCenterRef center,
 
 %new
 - (void)updateForLocation:(CGPoint)point {
+    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
+    NSDictionary *prefs = _self.lacePrefs;
     if (prefs[kEnabled] && ![prefs[kEnabled] boolValue])
         return;
 
     // Scroll to page
-    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
     int page = -1;
     BOOL animated = NO;
 
@@ -58,8 +56,7 @@ void updateSettings(CFNotificationCenterRef center,
         page = [prefs[kDefaultSection] integerValue];
     } else if ([prefs[kAutomode] boolValue]) {
         // Are notifications present?
-        BOOL hasContent = _self.mainPageView.pageViewController.combinedListViewController.hasContent;
-        if (!hasContent)
+        if (![_self hasLockscreenMainPageContent])
             page = 0;
     } else if (!prefs[kChangeWhileDragging] ||
                [prefs[kChangeWhileDragging] boolValue]) {
@@ -74,8 +71,13 @@ void updateSettings(CFNotificationCenterRef center,
     }
 }
 
-%end
+%new
+- (BOOL)hasLockscreenMainPageContent {
+    UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
+    return _self.mainPageView.pageViewController.combinedListViewController.hasContent;
+}
 
+%end
 
 // When bringing down the lockscreen from the homescreen
 %hook SBCoverSheetPrimarySlidingViewController
@@ -90,16 +92,8 @@ void updateSettings(CFNotificationCenterRef center,
 %end
 
 %ctor {
-    // Init settings file
-    prefs = [NSDictionary dictionaryWithContentsOfFile:prefPath];
-    if (!prefs) prefs = [NSMutableDictionary new];
-
     Class coverSheetViewClass = %c(CSCoverSheetView);
     if (!coverSheetViewClass)
         coverSheetViewClass = %c(SBDashBoardView);
-
     %init(CoverSheetView = coverSheetViewClass);
-
-    // Add observer to update settings    
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFStringRef(@"se.nosskirneh.lace2/preferencesChanged"), NULL, 0);
 }

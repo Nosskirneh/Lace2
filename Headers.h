@@ -33,10 +33,12 @@
 @protocol CoverSheetView
 @property (nonatomic, readwrite, assign) UIView<MainPageView> *mainPageView;
 @property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, retain) NSDictionary *lacePrefs;
 - (BOOL)scrollToPageAtIndex:(unsigned long long)index
                    animated:(BOOL)animated
              withCompletion:(id)completion;
 - (void)updateForLocation:(CGPoint)point;
+- (BOOL)hasLockscreenMainPageContent;
 @end
 
 @interface CSCoverSheetView : UIView<CoverSheetView>
