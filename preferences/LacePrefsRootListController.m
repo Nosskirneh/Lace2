@@ -89,14 +89,12 @@
             [self setEnabled:NO forSpecifierID:kDefaultSection];
         else
             [self setEnabled:enableCell forSpecifierID:kDefaultSection];
-
     } else if (!preferences[kEnabled] || [preferences[kEnabled] boolValue]) {
         if ([key isEqualToString:kAutomode]) {
             if ([preferences[kDefaultSectionEnabled] boolValue])
                 [self setEnabled:NO forSpecifierID:kChangeWhileDragging];
             else
                 [self setEnabled:!enableCell forSpecifierID:kChangeWhileDragging];
-
         } else if ([key isEqualToString:kDefaultSectionEnabled]) {
             // Disable Change While Dragging
             [self setEnabled:!enableCell forSpecifierID:kChangeWhileDragging];
@@ -139,7 +137,6 @@
     } else if ([key isEqualToString:kAutomode]) {
         // Disable Change While Dragging
         [self setEnabled:![value boolValue] forSpecifierID:kChangeWhileDragging];
-
     } else if ([key isEqualToString:kDefaultSectionEnabled]) {
         // Disable Change While Dragging
         [self setEnabled:![value boolValue] forSpecifierID:kChangeWhileDragging];
