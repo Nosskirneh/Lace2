@@ -1,5 +1,5 @@
 # Lace 2
-Compatible with iOS 11.
+Compatible with iOS 11 to 13.
 
 For iOS 10 support, see the initial [Lace](http://apt.thebigboss.org/onepackage.php?bundleid=se.nosskirneh.lace&db=).
 
