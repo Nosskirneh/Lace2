@@ -2,7 +2,6 @@
 #import "Headers.h"
 #import "preferences/Common.h"
 
-// When turning on the screen on the lockscreen
 %hook CoverSheetView
 
 %property (nonatomic, assign) NSInteger currentPage;
@@ -23,6 +22,7 @@
     return _self;
 }
 
+// When turning on the screen on the lockscreen
 - (BOOL)resetScrollViewToMainPageAnimated:(BOOL)animated withCompletion:(id)completion {
     UIView<CoverSheetView> *_self = (UIView<CoverSheetView> *)self;
     NSDictionary *prefs = _self.lacePrefs;
